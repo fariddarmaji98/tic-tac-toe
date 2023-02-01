@@ -19,34 +19,60 @@ const SIDE = {
     O: 'o'
 }
 
-const initialPlayerSide = {
-    player1: SIDE.X,
-    player2: SIDE.O
-}
+const initialPlayerSide = [
+    {
+        player: 1,
+        name: 'player1',
+        side: ''
+    },
+    {
+        player: 2,
+        name: 'player2',
+        side: ''
+    }
+]
 
-// Math.floor(Math.random() * max);
+const randomInt = Math.floor(Math.random() * 2)
 
 const Board = () => {
-    const [playerSide, setPlayerSide] = useState(initialPlayerSide)
+    const [players, setPlayers] = useState(initialPlayerSide)
     const [player1Road, setPlayer1Road] = useState([])
     const [player2Road, setPlayer2Road] = useState([])
-    const [turnTo, setTurnTo] = useState('')
+    const [turnToPlay, setTurnToPlay] = useState('')
     const [boardConfig, setBoardConfig] = useState([])
     
     useEffect(() => {
         setBoardConfig(createBoardConfig(BOARD))
+        setPlayers(players)
+        startTurnToPlay()
     }, [])
 
     useEffect(() => {
-        console.log('===> playerSide', playerSide)
-    }, [playerSide])
+        console.log('===> players', players)
+        console.log('===> player1Road', player1Road)
+        console.log('===> player2Road', player2Road)
 
-    const handleClick = () => {
-        setPlayerSide({
-            player1: SIDE.O,
-            player2: SIDE.X,
+    }, [players, player1Road, player2Road])
+
+    const setupPlayers = (players) => {
+        const tempSide = SIDE
+
+        let newPlayers = []
+        players.map(player => {
+            newPlayers = [...newPlayers, {
+                ...player,
+                side: tempSide.pop()
+            }]
         })
     }
+
+    const startTurnToPlay = () => {
+        const getPlayer = players[randomInt]
+
+        console.log('===> getPlayer', getPlayer)
+    }
+
+    const handleClick = () => {}
 
     const createBoardConfig = (lengthBoard = 0) => {
         let index = 0;
@@ -65,25 +91,26 @@ const Board = () => {
         return config
     }
 
-    const generatePiecesBoard = useMemo(() => {   
-        // console.log('===> boardConfig', boardConfig)
-        return <PiecesBoard 
-            side={SIDE.O} 
-            active={false} 
-            boardIndex={1} 
-            color={'text-red-700'} 
-        />
-        // return(<>
-        //     <PiecesBoard side={SIDE.O} active={false} boardIndex={1} color={'text-red-700'} />
-        //     <PiecesBoard side={SIDE.X} active={false} boardIndex={1} color={'text-green-700'} />
-        // </>)
-    }, [boardConfig])
+    const generatePiecesBoard = boardConfig?.map((itemBoardConfig, index) => <PiecesBoard 
+        key={index} 
+        boardIndex={itemBoardConfig.boardIndex}
+        color={'text-green-700'}
+        isFinish={false}
+        turnToPlay={turnToPlay}
+        setTurnToPlay={setTurnToPlay}
+        setPlayer1Road={setPlayer1Road}
+        setPlayer2Road={setPlayer2Road}
+    />)
+    // return(<>
+    //     <PiecesBoard side={SIDE.O} active={false} boardIndex={1} color={'text-red-700'} />
+    //     <PiecesBoard side={SIDE.X} active={false} boardIndex={1} color={'text-green-700'} />
+    // </>)
     
     return(<>
         <button onClick={() => handleClick()}>
             Hallo
         </button>
-        <div className="text-neutral-800 flex flex-wrap">
+        <div className="text-neutral-800 flex flex-wrap justify-center max-w-lg border border-white">
             {generatePiecesBoard}
         </div>
     </>)
