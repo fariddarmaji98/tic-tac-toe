@@ -23,12 +23,14 @@ const initialPlayerSide = [
     {
         player: 1,
         name: 'player1',
-        side: ''
+        side: '',
+        color: 'text-green-700'
     },
     {
         player: 2,
         name: 'player2',
-        side: ''
+        side: '',
+        color: 'text-red-700'
     }
 ]
 
@@ -38,38 +40,33 @@ const Board = () => {
     const [players, setPlayers] = useState(initialPlayerSide)
     const [player1Road, setPlayer1Road] = useState([])
     const [player2Road, setPlayer2Road] = useState([])
-    const [turnToPlay, setTurnToPlay] = useState('')
+    const [turnToPlay, setTurnToPlay] = useState(randomInt)
     const [boardConfig, setBoardConfig] = useState([])
     
     useEffect(() => {
         setBoardConfig(createBoardConfig(BOARD))
         setPlayers(players)
-        startTurnToPlay()
+        setupPlayers()
     }, [])
 
     useEffect(() => {
-        console.log('===> players', players)
         console.log('===> player1Road', player1Road)
         console.log('===> player2Road', player2Road)
+    }, [player1Road, player2Road])
 
-    }, [players, player1Road, player2Road])
-
-    const setupPlayers = (players) => {
-        const tempSide = SIDE
-
+    const setupPlayers = () => {
+        const tempSide = Object.values(SIDE)
         let newPlayers = []
+
         players.map(player => {
+            const newSide = tempSide.pop()
             newPlayers = [...newPlayers, {
                 ...player,
-                side: tempSide.pop()
+                side: newSide,
             }]
         })
-    }
 
-    const startTurnToPlay = () => {
-        const getPlayer = players[randomInt]
-
-        console.log('===> getPlayer', getPlayer)
+        setPlayers([...newPlayers])
     }
 
     const handleClick = () => {}
@@ -94,11 +91,13 @@ const Board = () => {
     const generatePiecesBoard = boardConfig?.map((itemBoardConfig, index) => <PiecesBoard 
         key={index} 
         boardIndex={itemBoardConfig.boardIndex}
-        color={'text-green-700'}
         isFinish={false}
+        players={players}
         turnToPlay={turnToPlay}
         setTurnToPlay={setTurnToPlay}
+        player1Road={player1Road}
         setPlayer1Road={setPlayer1Road}
+        player2Road={player2Road}
         setPlayer2Road={setPlayer2Road}
     />)
     // return(<>

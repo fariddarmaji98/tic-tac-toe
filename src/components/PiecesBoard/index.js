@@ -1,12 +1,25 @@
-import React from "react";
-
-
+import React, { useState } from "react";
 
 const PiecesBoard = (props) => {
-  const { side, active, boardIndex, color } = props
+  const [side, setSide] = useState('')
+  const [color, setColor] = useState('')
+
+  const { boardIndex, turnToPlay, setTurnToPlay, players, player1Road, setPlayer1Road, player2Road, setPlayer2Road } = props
 
   const handleClick = () => {
-    console.log('===> props', props)
+    console.log('===> players[turnToPlay]', players[turnToPlay])
+
+    setSide(players[turnToPlay]?.side || '')
+    setColor(players[turnToPlay]?.color)
+
+    if (turnToPlay === 0) {
+      setTurnToPlay(1)
+      setPlayer1Road([...player1Road, boardIndex])
+      return
+    }
+    
+    setTurnToPlay(0)
+    setPlayer2Road([...player2Road, boardIndex])
   }
 
   return (<>
