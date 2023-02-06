@@ -4,22 +4,30 @@ const PiecesBoard = (props) => {
   const [side, setSide] = useState('')
   const [color, setColor] = useState('')
 
-  const { boardIndex, turnToPlay, setTurnToPlay, players, player1Road, setPlayer1Road, player2Road, setPlayer2Road } = props
+  const { boardIndex, turnToPlay, setTurnToPlay, players, setPlayers, setsWin, player1Road, setPlayer1Road, player2Road, setPlayer2Road } = props
 
   const handleClick = () => {
-    console.log('===> players[turnToPlay]', players[turnToPlay])
+    if (!!side?.length) return
 
-    setSide(players[turnToPlay]?.side || '')
-    setColor(players[turnToPlay]?.color)
+    console.log('===> props', props)
+    // console.log('===> setsWin', setsWin)
 
-    if (turnToPlay === 0) {
-      setTurnToPlay(1)
-      setPlayer1Road([...player1Road, boardIndex])
-      return
-    }
+    const newTurnToPlay = (turnToPlay === 0) ? 1 : 0
+    const playerWaitingPlay = players.filter(player => player.player !== turnToPlay)
+    const playerToPlay = players.filter(player => player.player === turnToPlay)[0]
+    const playerRoad = [...playerToPlay.road , boardIndex]
+    const win = setsWin.filter(setWin => setWin.toString() === playerRoad.toString())
+
+    setSide(playerToPlay?.side || '')
+    setColor(playerToPlay?.color)
     
-    setTurnToPlay(0)
-    setPlayer2Road([...player2Road, boardIndex])
+    setPlayers([...playerWaitingPlay, {
+      ...playerToPlay,
+      road: playerRoad.sort(),
+      win
+    }])
+
+    setTurnToPlay(newTurnToPlay)
   }
 
   return (<>

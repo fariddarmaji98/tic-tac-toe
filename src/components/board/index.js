@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import PiecesBoard from "../PiecesBoard";
 
 const BOARD = 3*3;
-const SET_WIN = [
+const SETS_WIN = [
     [0, 1, 2],
     [3, 4, 5],
     [6, 7, 8],
@@ -21,13 +21,13 @@ const SIDE = {
 
 const initialPlayerSide = [
     {
-        player: 1,
+        player: 0,
         name: 'player1',
         side: '',
         color: 'text-green-700'
     },
     {
-        player: 2,
+        player: 1,
         name: 'player2',
         side: '',
         color: 'text-red-700'
@@ -50,9 +50,19 @@ const Board = () => {
     }, [])
 
     useEffect(() => {
-        console.log('===> player1Road', player1Road)
-        console.log('===> player2Road', player2Road)
-    }, [player1Road, player2Road])
+        // console.log('===> player1Road', player1Road)
+        // console.log('===> player2Road', player2Road)
+        console.log('===> players', players)
+        // console.log('===> turnToPlay', turnToPlay)
+        return
+    }, [players])
+
+    const checkWin = (playerRoad) => {
+        // console.log('===> playerRoad', playerRoad)
+        SETS_WIN.map(setWin => {
+            console.log('===> setWin', setWin)
+        })
+    }
 
     const setupPlayers = () => {
         const tempSide = Object.values(SIDE)
@@ -63,6 +73,7 @@ const Board = () => {
             newPlayers = [...newPlayers, {
                 ...player,
                 side: newSide,
+                road: []
             }]
         })
 
@@ -93,12 +104,14 @@ const Board = () => {
         boardIndex={itemBoardConfig.boardIndex}
         isFinish={false}
         players={players}
+        setPlayers={setPlayers}
         turnToPlay={turnToPlay}
         setTurnToPlay={setTurnToPlay}
         player1Road={player1Road}
         setPlayer1Road={setPlayer1Road}
         player2Road={player2Road}
         setPlayer2Road={setPlayer2Road}
+        setsWin={SETS_WIN}
     />)
     // return(<>
     //     <PiecesBoard side={SIDE.O} active={false} boardIndex={1} color={'text-red-700'} />
@@ -114,6 +127,5 @@ const Board = () => {
         </div>
     </>)
 }
-
 
 export default Board
