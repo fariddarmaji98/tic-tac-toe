@@ -113,10 +113,6 @@ const Board = () => {
         setPlayer2Road={setPlayer2Road}
         setsWin={SETS_WIN}
     />)
-    // return(<>
-    //     <PiecesBoard side={SIDE.O} active={false} boardIndex={1} color={'text-red-700'} />
-    //     <PiecesBoard side={SIDE.X} active={false} boardIndex={1} color={'text-green-700'} />
-    // </>)
     
     return(<>
         <button onClick={() => handleClick()}>

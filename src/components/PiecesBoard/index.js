@@ -10,20 +10,32 @@ const PiecesBoard = (props) => {
     if (!!side?.length) return
 
     console.log('===> props', props)
+    console.clear()
     // console.log('===> setsWin', setsWin)
 
     const newTurnToPlay = (turnToPlay === 0) ? 1 : 0
     const playerWaitingPlay = players.filter(player => player.player !== turnToPlay)
     const playerToPlay = players.filter(player => player.player === turnToPlay)[0]
-    const playerRoad = [...playerToPlay.road , boardIndex]
+    const playerRoad = [...playerToPlay.road , boardIndex].sort()
     const win = setsWin.filter(setWin => setWin.toString() === playerRoad.toString())
+    
+    console.log('===> =====================>')
+    console.log('===> playerRoad', playerRoad)
+    
+    setsWin.map(setWin => {
+      console.log('===> setWin', setWin)
+      const closeToVictory = playerRoad.reduce((acc, curr) => {
+        const itemVictory = setWin.filter(itemWin => itemWin === curr)
+        console.log('===> itemVictory', itemVictory)
+      })
+    })
 
     setSide(playerToPlay?.side || '')
     setColor(playerToPlay?.color)
     
     setPlayers([...playerWaitingPlay, {
       ...playerToPlay,
-      road: playerRoad.sort(),
+      road: playerRoad,
       win
     }])
 
@@ -41,5 +53,5 @@ const PiecesBoard = (props) => {
     </div>
   </>);
 }
- 
+
 export default PiecesBoard;
