@@ -9,3 +9,14 @@ export const SET_WIN = [
     [0, 4, 8],
     [2, 4, 6],
 ];
+
+export const MODE_CONF = {
+    MULTIPLAYER: {
+        key: 0,
+        text: "Multiplayer"
+    },
+    VSAI: {
+        key: 1,
+        text: "VS AI"
+    }
+  }

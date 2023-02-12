@@ -4,30 +4,28 @@ const PiecesBoard = (props) => {
   const [side, setSide] = useState('')
   const [color, setColor] = useState('')
 
-  const { boardIndex, turnToPlay, setTurnToPlay, players, setPlayers, setsWin, player1Road, setPlayer1Road, player2Road, setPlayer2Road } = props
+  const { boardIndex, turnToPlay, setTurnToPlay, players, setPlayers, setsWin, finish } = props
+
+  // console.log('===> players', players)
 
   const handleClick = () => {
-    if (!!side?.length) return
+    if (!!side?.length || finish) return
+    // console.clear()
 
-    console.log('===> props', props)
-    console.clear()
-    // console.log('===> setsWin', setsWin)
-
+    let win = [];
     const newTurnToPlay = (turnToPlay === 0) ? 1 : 0
     const playerWaitingPlay = players.filter(player => player.player !== turnToPlay)
     const playerToPlay = players.filter(player => player.player === turnToPlay)[0]
-    const playerRoad = [...playerToPlay.road , boardIndex].sort()
-    const win = setsWin.filter(setWin => setWin.toString() === playerRoad.toString())
-    
-    console.log('===> =====================>')
-    console.log('===> playerRoad', playerRoad)
+    const playerRoad = [...playerToPlay.road , boardIndex]
     
     setsWin.map(setWin => {
-      console.log('===> setWin', setWin)
-      const closeToVictory = playerRoad.reduce((acc, curr) => {
-        const itemVictory = setWin.filter(itemWin => itemWin === curr)
-        console.log('===> itemVictory', itemVictory)
+      const closeToVictory = playerRoad.map((road) => {
+        const itemVictory = setWin.filter(itemWin => itemWin === road)
+        return itemVictory[0] !== undefined ? itemVictory[0] : null
       })
+      .filter(road => road !== null)
+      
+      win = [ ...win, closeToVictory ]
     })
 
     setSide(playerToPlay?.side || '')
@@ -44,10 +42,10 @@ const PiecesBoard = (props) => {
 
   return (<>
     <div 
-      className="w-36 h-36 border-2 border-solid border-sky-900 flex justify-center align-middle"
+      className="w-36 h-36 border-2 border-solid border-sky-900 flex justify-center items-center"
       onClick={() => handleClick()}
     >
-      <span className={`text-9xl font-light ${color}`}>
+      <span className={`text-9xl font-light ${color} ${!finish && 'animate-pulse'} -mt-6`}>
         {side}
       </span>
     </div>

@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 
+import Winner from "../winner";
 import PiecesBoard from "../PiecesBoard";
+
+import { MODE_CONF } from "../../constants";
+import { RandomInt } from "../../utils/random";
 
 const BOARD = 3*3;
 const SETS_WIN = [
@@ -34,33 +38,42 @@ const initialPlayerSide = [
     }
 ]
 
-const randomInt = Math.floor(Math.random() * 2)
-
-const Board = () => {
+const Board = ({
+    mode
+}) => {
     const [players, setPlayers] = useState(initialPlayerSide)
-    const [player1Road, setPlayer1Road] = useState([])
-    const [player2Road, setPlayer2Road] = useState([])
-    const [turnToPlay, setTurnToPlay] = useState(randomInt)
+    const [turnToPlay, setTurnToPlay] = useState(RandomInt(2))
     const [boardConfig, setBoardConfig] = useState([])
+    const [finish, setFinish] =useState(false)
     
     useEffect(() => {
         setBoardConfig(createBoardConfig(BOARD))
-        setPlayers(players)
         setupPlayers()
     }, [])
 
     useEffect(() => {
-        // console.log('===> player1Road', player1Road)
-        // console.log('===> player2Road', player2Road)
-        console.log('===> players', players)
-        // console.log('===> turnToPlay', turnToPlay)
-        return
-    }, [players])
+        // console.clear()
+        players.map(player => checkWin(player))
+    }, [turnToPlay])
 
-    const checkWin = (playerRoad) => {
-        // console.log('===> playerRoad', playerRoad)
-        SETS_WIN.map(setWin => {
-            console.log('===> setWin', setWin)
+    const checkWin = (player) => {
+        const { win } = player
+        
+        if (!win?.length) return;
+
+        win.map(itemWin => {
+            if (itemWin?.length !== 3) return;
+            
+            const playerNotWin = players.filter(itemPlayer => itemPlayer.player !== player.player)
+            setPlayers([
+                ...playerNotWin,
+                {
+                    ...player,
+                    winner: [ ...itemWin ]
+                }
+            ])
+
+            setFinish(true)
         })
     }
 
@@ -102,22 +115,21 @@ const Board = () => {
     const generatePiecesBoard = boardConfig?.map((itemBoardConfig, index) => <PiecesBoard 
         key={index} 
         boardIndex={itemBoardConfig.boardIndex}
-        isFinish={false}
+        finish={finish}
         players={players}
         setPlayers={setPlayers}
         turnToPlay={turnToPlay}
         setTurnToPlay={setTurnToPlay}
-        player1Road={player1Road}
-        setPlayer1Road={setPlayer1Road}
-        player2Road={player2Road}
-        setPlayer2Road={setPlayer2Road}
         setsWin={SETS_WIN}
     />)
+
+    const renderWinner = useMemo(() => <Winner finish={finish} players={players} />, [finish])
     
     return(<>
         <button onClick={() => handleClick()}>
             Hallo
         </button>
+        {renderWinner}
         <div className="text-neutral-800 flex flex-wrap justify-center max-w-lg border border-white">
             {generatePiecesBoard}
         </div>
